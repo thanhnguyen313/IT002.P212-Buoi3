@@ -1,0 +1,14 @@
+# Visual Studio
+.vs/
+*.vsidx
+*.user
+*.suo
+*.db
+
+# Build
+bin/
+obj/
+
+# System
+Thumbs.db
+*.log
