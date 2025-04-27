@@ -4,30 +4,29 @@
 #include "cArray.h"
 using namespace std;
 
-void cArray::createRandomArray(int minValue = 0, int maxValue = 100)	// Ham tao mang ngau nhien voi n phan tu la so nguyen
+void cArray::createRandomArray(int minValue , int maxValue)	// Ham tao mang ngau nhien voi n phan tu la so nguyen
 {
-	srand(static_cast<unsigned int>(time(0))); // Khoi tao seed cho rand()
 	int n; cout << "\nNhap so luong phan tu cua mang: "; cin >> n;
 	if (n == 0) return;
 	array.resize(n);
-	for (int i = 0; i < array.size(); ++i) 
+	for (size_t i = 0; i < array.size(); i++) 
 	{
 		int randomNumber = minValue + rand() % (maxValue - minValue + 1);
-		array.push_back(randomNumber);
+		array[i] = randomNumber;
 	}
 }
+int cArray::getArraySize() { return array.size(); }
 void cArray::output()
 {
-	cout << "\nMang array: ";
-	for (int i = 0; i < array.size(); i++)
+	for (size_t i = 0; i < array.size(); i++)
 	{
-		cout << array[i];
+		cout << array[i] << " ";
 	}
 }
 int cArray::countX(int x)
 {
 	int count = 0;
-	for (int i = 0; i < array.size(); i++)
+	for (size_t i = 0; i < array.size(); i++)
 	{
 		if (array[i] == x)
 			count++;
@@ -36,7 +35,7 @@ int cArray::countX(int x)
 }
 bool cArray::increasingArray()
 {
-	for (int i = 1; i < array.size(); i++)
+	for (size_t i = 1; i < array.size(); i++)
 	{
 		if (array[i] < array[i - 1])
 			return false;
@@ -46,9 +45,9 @@ bool cArray::increasingArray()
 int cArray::minOddElement()
 {
 	int minOdd = -1; //Neu mang ko co so le
-	for (int i = 0; i < array.size(); i++)
+	for (size_t i = 0; i < array.size(); i++)
 	{
-		if (array[i] % 2 == 0) // tim so le
+		if (array[i] % 2 != 0) // tim so le
 			if (minOdd == -1 || array[i] < minOdd) // so le dau tien trong  (khi do minOdd bang -1 thi gan minOdd = so le dau tien do)
 				minOdd = array[i];
 	}
@@ -57,7 +56,7 @@ int cArray::minOddElement()
 int cArray::maxPrimeElement()
 {
 	int maxPrimeNum = -1; 
-	for (int i = 0; i < array.size(); i++)
+	for (size_t i = 0; i < array.size(); i++)
 	{
 		if (isPrimeNum(array[i]))
 			if (maxPrimeNum == -1 || array[i] > maxPrimeNum)
@@ -65,12 +64,20 @@ int cArray::maxPrimeElement()
 	}
 	return maxPrimeNum;
 }
+void cArray::copy(cArray &otherArray)
+{
+	otherArray.array.resize(array.size());
+	for (size_t i = 0; i < otherArray.array.size(); i++)
+	{
+		otherArray.array[i] = array[i];
+	}
+}
 void cArray::bubbleSort()
 {
-	for (int i = 0; i < array.size() - 1; i++)
+	for (size_t i = 0; i < array.size() - 1; i++)
 	{
 		bool finish = false;
-		for (int j = 0; j < array.size() - 1 - i; j++)
+		for (size_t j = 0; j < array.size() - 1 - i; j++)
 		{
 			if (array[j] > array[j + 1])
 			{
@@ -84,10 +91,10 @@ void cArray::bubbleSort()
 }
 void cArray::selectionSort()
 {
-	for (int i = 0; i < array.size(); i++)
+	for (size_t i = 0; i < array.size(); i++)
 	{
-		int min_index = i;
-		for (int j = i; j < array.size(); j++)
+		size_t min_index = i;
+		for (size_t j = i; j < array.size(); j++)
 		{
 			if (array[j] < array[min_index])
 				min_index = j;
@@ -97,10 +104,10 @@ void cArray::selectionSort()
 }
 void cArray::insertionSort()
 {
-	for (int i = 1; i < array.size(); i++)
+	for (size_t i = 1; i < array.size(); i++)
 	{
 		int temp = array[i];
-		int j = i - 1;
+		int j = static_cast<int>(i) - 1;;
 		while (j >= 0 && array[j] > temp)
 		{
 			array[j + 1] = array[j];
@@ -109,20 +116,20 @@ void cArray::insertionSort()
 		array[j + 1] = temp;
 	}
 }
-void cArray::merge(int left, int mid, int right)
+void cArray::merge(size_t left, size_t mid, size_t right)
 {
-	int nL = mid - left + 1;
-	int nR = right - mid;
+	size_t nL = mid - left + 1;
+	size_t nR = right - mid;
 	vector <int> L(nL), R(nR);
-	for (int i = 0; i < nL; i++)
+	for (size_t i = 0; i < nL; i++)
 	{
 		L[i] = array[left + i];
 	}
-	for (int i = 0; i < nR; i++)
+	for (size_t i = 0; i < nR; i++)
 	{
 		R[i] = array[mid + 1 + i];
 	}
-	int i = 0, j = 0, k = left;
+	size_t i = 0, j = 0, k = left;
 	while (i < nL && j < nR)
 	{
 		if (L[i] <= R[j])
@@ -133,11 +140,11 @@ void cArray::merge(int left, int mid, int right)
 	while (i < nL) array[k++] = L[i++];
 	while (j < nR) array[k++] = R[j++];
 }
-void cArray::mergeSort(int left, int right)
+void cArray::mergeSort(size_t left, size_t right)
 {
 	if (left < right)
 	{
-		int mid = (left + right) / 2;
+		size_t mid = (left + right) / 2;
 		mergeSort(left, mid);
 		mergeSort(mid + 1, right);
 		merge(left, mid, right);
@@ -147,17 +154,41 @@ void cArray::mergeSort()
 {
 	mergeSort(0, array.size() - 1);
 }
+int cArray::partition(int low, int high)
+{
+	int pivot = array[high];
+	int i = low - 1;
+	for (int j = low; j < high; j++)
+	{
+		if (array[j] < pivot)
+		{
+			i++;
+			swap(array[i], array[j]);
+		}
+	}
+	swap(array[i + 1], array[high]);
+	return i + 1;
+}
+
+void cArray::quickSort(int low, int high)
+{
+	if (low < high)
+	{
+		int pivot = partition(low, high);
+
+		quickSort(low, pivot - 1);
+		quickSort(pivot + 1, high);
+	}
+}
+
 void cArray::quickSort()
 {
-
-}
-void cArray::heapSort()
-{
-
+	quickSort(0, array.size() - 1);
 }
 bool isPrimeNum(int x)
 {
 	if (x == 2) return true;
+	if (x % 2 == 0) return false;
 	if (x < 2) return false;
 	for (int i = 3; i * i <= x; i += 2)
 	{
